@@ -1,0 +1,22 @@
+{
+  "name": "mapstore-privacy-settings-extension",
+  "version": "1.0.0",
+  "description": "MapStore extension with the policy pages and the privacy configuration of an installation",
+  "private": true,
+  "license": "BSD-2-Clause",
+  "author": "GeoSolutions",
+  "scripts": {
+    "build": "node build.js",
+    "build:draft": "node build.js --draft",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "jszip": "3.10.1"
+  },
+  "devDependencies": {
+    "rxjs": "5.5.12"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

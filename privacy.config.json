@@ -1,0 +1,11 @@
+{
+  "name": "PrivacySettings",
+  "title": "Privacy settings",
+  "description": "Policy pages and privacy configuration of the privacy settings panel. Adding it to a context changes nothing.",
+  "policyVersion": "template-1",
+  "retentionDays": 180,
+  "enabled": true,
+  "categories": [],
+  "locales": ["en-US"],
+  "pages": ["cookie", "privacy", "terms"]
+}
