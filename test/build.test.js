@@ -90,12 +90,24 @@ test('builds a zip with index.js, index.json, the pages and the translations', (
                     name: 'PrivacySettings',
                     title: 'Test title',
                     description: 'Test description',
+                    version: VERSION,
                     glyph: 'lock',
                     defaultConfig: {}
                 }]
             });
         });
     });
+});
+
+test('hides the plugin in the context creator when configured', () => {
+    const root = project({ config: { hiddenInContextCreator: true } });
+    return buildAndRead(root, { draft: true })
+        .then(({ zip }) => zip.file('index.json').async('string'))
+        .then(json => {
+            const plugin = JSON.parse(json).plugins[0];
+            assert.strictEqual(plugin.hidden, true);
+            assert.strictEqual(plugin.version, VERSION);
+        });
 });
 
 test('the extension sets the privacy configuration with links by locale next to its script', () => {
@@ -178,6 +190,7 @@ test('reports invalid configuration and missing pages', () => {
         policyVersion: '',
         retentionDays: 0,
         enabled: 'yes',
+        hiddenInContextCreator: 'no',
         categories: [{ id: 'ads', description: {} }, { id: 'statistics' }],
         locales: ['en-US', 'de-DE'],
         pages: ['cookie', 'faq']
@@ -188,6 +201,7 @@ test('reports invalid configuration and missing pages', () => {
             'policyVersion is required',
             'retentionDays must be a positive integer',
             'enabled must be true or false',
+            'hiddenInContextCreator must be true or false',
             'category "ads" is not one of functional, statistics, marketing',
             'category "statistics" needs a description by locale',
             'page "faq" is not one of cookie, privacy, terms',

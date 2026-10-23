@@ -5,7 +5,14 @@
   "policyVersion": "template-1",
   "retentionDays": 180,
   "enabled": true,
+  "hiddenInContextCreator": false,
   "categories": [],
-  "locales": ["en-US"],
-  "pages": ["cookie", "privacy", "terms"]
+  "locales": [
+    "en-US"
+  ],
+  "pages": [
+    "cookie",
+    "privacy",
+    "terms"
+  ]
 }

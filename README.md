@@ -48,6 +48,7 @@ Pushing a tag `v<version>` builds the zip and publishes it as a GitHub release.
 | `policyVersion` | Version of the policies. Change it every time the content of the pages changes: users are asked for their choices again |
 | `retentionDays` | Days a choice is kept before it is asked again |
 | `enabled` | Enables the panel when `localConfig.json` has no `privacy` section |
+| `hiddenInContextCreator` | Hides the extension in the context creator, where adding it to a context changes nothing. Set it to `true` only with a MapStore version that has the Extensions page in the manager: elsewhere the extension could not be uninstalled from the user interface |
 | `categories` | Optional categories actually used, among `functional`, `statistics` and `marketing`, with a description by locale |
 | `locales` | Languages of the pages, one folder each in `assets`. The first one is used when the language of MapStore has no pages |
 | `pages` | Pages linked by the panel, among `cookie`, `privacy` and `terms` |

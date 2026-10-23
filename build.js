@@ -44,6 +44,9 @@ const validate = (root, config, { draft }) => {
     if (typeof config.enabled !== 'boolean') {
         errors.push('enabled must be true or false');
     }
+    if (config.hiddenInContextCreator !== undefined && typeof config.hiddenInContextCreator !== 'boolean') {
+        errors.push('hiddenInContextCreator must be true or false');
+    }
     const ids = (config.categories || []).map(category => category.id);
     ids.filter(id => !CATEGORY_IDS.includes(id)).forEach(id => errors.push(`category "${id}" is not one of ${CATEGORY_IDS.join(', ')}`));
     ids.filter((id, index) => ids.indexOf(id) !== index).forEach(id => errors.push(`category "${id}" is repeated`));
@@ -89,11 +92,15 @@ const build = ({ root = __dirname, out = path.join(root, 'dist'), draft = false 
         version: pkg.version,
         title: config.title || config.name,
         description: config.description || '',
+        // MapStore stores only this entry in the plugins catalog, where its version and
+        // visibility are read by the context creator and the extensions manager.
         plugins: [{
             name: config.name,
             title: config.title || config.name,
             description: config.description || '',
+            version: pkg.version,
             glyph: 'lock',
+            ...(config.hiddenInContextCreator ? { hidden: true } : {}),
             defaultConfig: {}
         }]
     };
