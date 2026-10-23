@@ -18,17 +18,37 @@ const ROOT = path.join(__dirname, '..');
 const SCRIPT_URL = 'http://localhost/mapstore/extensions/PrivacySettings/index.js?v=123';
 const BASE = 'http://localhost/mapstore/extensions/PrivacySettings/';
 
-// Copy of the project in a temporary folder, with the given changes applied.
+// Test configuration and pages, independent of the ones of the repository.
+const TEST_CONFIG = {
+    name: 'PrivacySettings',
+    title: 'Test title',
+    description: 'Test description',
+    policyVersion: 'test-1',
+    retentionDays: 180,
+    enabled: true,
+    categories: [],
+    locales: ['en-US'],
+    pages: ['cookie', 'privacy', 'terms']
+};
+const VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
+
+// Project in a temporary folder with the build sources of the repository, the test configuration
+// and synthetic pages, with the given changes applied.
 const project = (changes = {}) => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'privacy-settings-'));
-    ['package.json', 'privacy.config.json'].forEach(file => fs.copyFileSync(path.join(ROOT, file), path.join(root, file)));
+    fs.copyFileSync(path.join(ROOT, 'package.json'), path.join(root, 'package.json'));
     fs.cpSync(path.join(ROOT, 'src'), path.join(root, 'src'), { recursive: true });
-    fs.cpSync(path.join(ROOT, 'assets'), path.join(root, 'assets'), { recursive: true });
-    if (changes.config) {
-        const file = path.join(root, 'privacy.config.json');
-        fs.writeFileSync(file, JSON.stringify({ ...JSON.parse(fs.readFileSync(file, 'utf8')), ...changes.config }));
-    }
-    Object.entries(changes.files || {}).forEach(([file, content]) => {
+    const files = {
+        'privacy.config.json': JSON.stringify({ ...TEST_CONFIG, ...changes.config }),
+        'src/integrations.js': 'var integrations = [];',
+        'assets/logo.png': 'logo',
+        'assets/privacy-docs.css': 'body {}',
+        'assets/en-US/cookie.html': '<p>cookie</p>',
+        'assets/en-US/privacy.html': '<p>privacy</p>',
+        'assets/en-US/terms.html': '<p>terms</p>',
+        ...changes.files
+    };
+    Object.entries(files).forEach(([file, content]) => {
         fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
         fs.writeFileSync(path.join(root, file), content);
     });
@@ -54,7 +74,7 @@ const buildAndRead = (root, options = {}) => build({ root, out: path.join(root, 
 test('builds a zip with index.js, index.json, the pages and the translations', () => {
     const root = project({ files: { 'translations/data.it-IT.json': '{"locale": "it-IT", "messages": {}}' } });
     return buildAndRead(root, { draft: true }).then(({ file, zip }) => {
-        assert.strictEqual(path.basename(file), 'PrivacySettings-1.0.0-draft.zip');
+        assert.strictEqual(path.basename(file), `PrivacySettings-${VERSION}-draft.zip`);
         assert.deepStrictEqual(Object.keys(zip.files).filter(name => !zip.files[name].dir).sort(), [
             'assets/en-US/cookie.html', 'assets/en-US/privacy.html', 'assets/en-US/terms.html',
             'assets/logo.png', 'assets/privacy-docs.css',
@@ -63,13 +83,13 @@ test('builds a zip with index.js, index.json, the pages and the translations', (
         return zip.file('index.json').async('string').then(json => {
             assert.deepStrictEqual(JSON.parse(json), {
                 id: 'PrivacySettings',
-                version: '1.0.0',
-                title: 'Privacy settings',
-                description: 'Policy pages and privacy configuration of the privacy settings panel. Adding it to a context changes nothing.',
+                version: VERSION,
+                title: 'Test title',
+                description: 'Test description',
                 plugins: [{
                     name: 'PrivacySettings',
-                    title: 'Privacy settings',
-                    description: 'Policy pages and privacy configuration of the privacy settings panel. Adding it to a context changes nothing.',
+                    title: 'Test title',
+                    description: 'Test description',
                     glyph: 'lock',
                     defaultConfig: {}
                 }]
@@ -136,10 +156,20 @@ test('integrations start with the consent to their category and stop when it is 
         });
 });
 
-test('refuses to build pages with placeholders unless it is a draft', () => {
-    const root = project();
-    assert.throws(() => build({ root, out: path.join(root, 'dist') }),
-        /assets\/en-US\/cookie\.html still contains placeholders or template notes/);
+test('refuses to build pages with placeholders or template notes unless it is a draft', () => {
+    const root = project({ files: {
+        'assets/en-US/cookie.html': '<p><span class="placeholder">[DATE]</span></p>',
+        'assets/en-US/terms.html': '<aside class="template-note">Template</aside>'
+    } });
+    assert.throws(() => build({ root, out: path.join(root, 'dist') }), error => {
+        assert.deepStrictEqual(error.message.split('\n- ').slice(1), [
+            'assets/en-US/cookie.html still contains placeholders or template notes',
+            'assets/en-US/terms.html still contains placeholders or template notes'
+        ]);
+        return true;
+    });
+    return build({ root, out: path.join(root, 'dist'), draft: true })
+        .then(file => assert.ok(fs.existsSync(file)));
 });
 
 test('reports invalid configuration and missing pages', () => {
