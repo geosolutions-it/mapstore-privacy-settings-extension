@@ -92,8 +92,8 @@ const build = ({ root = __dirname, out = path.join(root, 'dist'), draft = false 
         version: pkg.version,
         title: config.title || config.name,
         description: config.description || '',
-        // MapStore stores only this entry in the plugins catalog, where its version and
-        // visibility are read by the context creator and the extensions manager.
+        // The context creator reads title, version and visibility from this entry. The
+        // extensions manager reads the extension from the top level and lists this entry.
         plugins: [{
             name: config.name,
             title: config.title || config.name,
