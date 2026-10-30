@@ -1,5 +1,5 @@
 {
-  "name": "mapstore-privacy-settings-extension",
+  "name": "mapstore-privacy-settings-test",
   "version": "1.1.0",
   "description": "MapStore extension with the policy pages and the privacy configuration of an installation",
   "private": true,

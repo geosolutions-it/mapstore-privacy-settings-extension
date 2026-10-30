@@ -1,5 +1,35 @@
 # MapStore privacy settings extension
 
+## Test branch `test-categories`
+
+Test-only extension, built from the
+[mapstore-privacy-settings-extension](https://github.com/geosolutions-it/mapstore-privacy-settings-extension) template,
+to check the optional categories of the MapStore privacy panel. Do not install it in production.
+
+It configures the three categories (`functional`, `statistics`, `marketing`) and one fake integration for each.
+Nothing is sent anywhere. While an integration runs it:
+
+- shows a coloured badge in the top right corner of the page;
+- stores the `privacy-test.<category>` localStorage key and the `privacy_test_<category>` cookie;
+- is listed in `window.PrivacyTestIntegrations` and logs `[privacy test] started <category>` in the console.
+
+Its teardown removes all of them and logs `[privacy test] stopped <category>`.
+
+### Use
+
+1. `npm ci` and `npm run build:draft`: the zip is in `dist`.
+2. Upload it as administrator from the context creator. `localConfig.json` must not configure `privacy.links`,
+   otherwise MapStore ignores the configuration of the extension.
+3. Open MapStore in a private window and check:
+   - before a choice no badge is shown;
+   - **Accept optional** starts the three integrations, **Withdraw** or **Reject optional** stops them;
+   - **Customize** starts only the selected categories;
+   - after a reload the saved choice starts the same integrations without opening the panel.
+
+Change `policyVersion` in `privacy.config.json` to be asked again.
+
+The rest of this file describes the template.
+
 Template of a [MapStore](https://github.com/geosolutions-it/MapStore2) extension that configures the privacy settings
 panel of an installation, so that `localConfig.json` does not need to change:
 

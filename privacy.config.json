@@ -1,12 +1,34 @@
 {
   "name": "PrivacySettings",
-  "title": "Privacy settings",
-  "description": "Policy pages and privacy configuration of the privacy settings panel. Adding it to a context changes nothing.",
-  "policyVersion": "template-1",
+  "title": "Privacy settings test",
+  "description": "Test extension with three optional categories and fake integrations that show when they run. Not for production.",
+  "policyVersion": "test-categories-1",
   "retentionDays": 180,
   "enabled": true,
   "hiddenInContextCreator": false,
-  "categories": [],
+  "categories": [
+    {
+      "id": "functional",
+      "description": {
+        "en-US": "TEST: fake functional tool. It shows a green badge and stores privacy-test.functional.",
+        "it-IT": "TEST: strumento funzionale finto. Mostra un badge verde e salva privacy-test.functional."
+      }
+    },
+    {
+      "id": "statistics",
+      "description": {
+        "en-US": "TEST: fake statistics tool. It shows a blue badge and stores privacy-test.statistics.",
+        "it-IT": "TEST: strumento statistico finto. Mostra un badge blu e salva privacy-test.statistics."
+      }
+    },
+    {
+      "id": "marketing",
+      "description": {
+        "en-US": "TEST: fake marketing tool. It shows an orange badge and stores privacy-test.marketing.",
+        "it-IT": "TEST: strumento di marketing finto. Mostra un badge arancione e salva privacy-test.marketing."
+      }
+    }
+  ],
   "locales": [
     "en-US"
   ],
