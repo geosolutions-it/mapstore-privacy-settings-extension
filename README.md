@@ -9,7 +9,7 @@ to check the optional categories of the MapStore privacy panel. Do not install i
 It configures the three categories (`functional`, `statistics`, `marketing`) and one fake integration for each.
 Nothing is sent anywhere. While an integration runs it:
 
-- shows a coloured badge in the bottom left corner of the page (it does not capture clicks);
+- shows a coloured badge in the bottom right corner of the page (it does not capture clicks);
 - stores the `privacy-test.<category>` localStorage key and the `privacy_test_<category>` cookie;
 - is listed in `window.PrivacyTestIntegrations` and logs `[privacy test] started <category>` in the console.
 
