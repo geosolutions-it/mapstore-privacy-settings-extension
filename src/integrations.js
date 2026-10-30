@@ -1,5 +1,5 @@
 // Fake optional integrations for testing the consent lifecycle. Nothing is sent anywhere.
-// While an integration runs it shows a badge in the top right corner, stores a localStorage key
+// While an integration runs it shows a badge in the bottom left corner, stores a localStorage key
 // and a cookie, and is listed in window.PrivacyTestIntegrations. Its teardown removes all of them.
 var testIntegration = function(category, color) {
     var key = "privacy-test." + category;
@@ -11,7 +11,7 @@ var testIntegration = function(category, color) {
             if (!container) {
                 container = document.createElement("div");
                 container.id = "privacy-test-badges";
-                container.style.cssText = "position:fixed;top:60px;right:10px;z-index:100000;display:flex;flex-direction:column;gap:4px;font:bold 12px sans-serif";
+                container.style.cssText = "position:fixed;bottom:60px;left:10px;z-index:100000;pointer-events:none;opacity:0.85;display:flex;flex-direction:column;gap:4px;font:bold 12px sans-serif";
                 document.body.appendChild(container);
             }
             var badge = document.createElement("div");
