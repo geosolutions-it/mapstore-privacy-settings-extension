@@ -18,7 +18,16 @@ var testIntegration = function(category, color) {
             badge.className = "privacy-test-badge";
             badge.setAttribute("data-category", category);
             badge.textContent = category + " running";
-            badge.style.cssText = "background:" + color + ";color:#fff;padding:4px 8px;border-radius:3px";
+            badge.style.cssText = "background:" + color + ";color:#fff;padding:4px 8px;border-radius:3px;display:flex;align-items:center;gap:6px";
+            // Hiding a badge does not stop the integration: only the teardown does.
+            var close = document.createElement("button");
+            close.type = "button";
+            close.textContent = "×";
+            close.title = "Hide badge";
+            close.setAttribute("aria-label", "Hide " + category + " badge");
+            close.style.cssText = "pointer-events:auto;cursor:pointer;background:none;border:0;color:#fff;font:bold 14px sans-serif;padding:0;line-height:1";
+            close.onclick = function() { badge.remove(); };
+            badge.appendChild(close);
             container.appendChild(badge);
             localStorage.setItem(key, String(Date.now()));
             document.cookie = "privacy_test_" + category + "=1; path=/; SameSite=Lax";
