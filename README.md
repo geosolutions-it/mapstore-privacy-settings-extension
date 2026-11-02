@@ -19,7 +19,7 @@ See the [privacy settings guide](https://docs.mapstore.geosolutionsgroup.com/en/
 3. Edit `privacy.config.json` (see below).
 4. Run `npm ci` and `npm run build`. The build checks the configuration and refuses pages that still contain
    placeholders; `npm run build:draft` builds them anyway, to preview the result.
-5. Upload `dist/PrivacySettings-<version>.zip` from the extensions section of the MapStore context creator.
+5. Upload `dist/PrivacySettings-<version>.zip` from the Extensions page of the MapStore manager (2027.01.00 or later), or from the extensions section of the context creator.
 
 Pushing a tag `v<version>` builds the zip and publishes it as a GitHub release.
 
